@@ -162,7 +162,7 @@ export const siteContent: SiteContent = {
       role: "Senior Frontend Engineer",
       company: "Dentsu World Services",
       period: "2022 — Present",
-      location: "Pune, India",
+      location: "Pune, India", 
       summary:
         "Leading frontend architecture for a portfolio of Shopify Plus and SFCC clients, with a focus on performance and headless migrations.",
       highlights: [
