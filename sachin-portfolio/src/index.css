@@ -1,0 +1,121 @@
+@import "tailwindcss";
+
+/* ──────────────────────────────────────────────────────────
+   Design tokens — Apple-inspired dark theme.
+   Every color/font/radius the components use traces back here.
+   ────────────────────────────────────────────────────────── */
+@theme {
+  /* Canvas & surfaces */
+  --color-canvas: #000000;
+  --color-surface: #0a0a0c;
+  --color-surface-raised: #131316;
+
+  /* Glass material */
+  --color-glass: rgba(255, 255, 255, 0.06);
+  --color-glass-hover: rgba(255, 255, 255, 0.09);
+  --color-glass-border: rgba(255, 255, 255, 0.12);
+  --color-glass-border-hover: rgba(255, 255, 255, 0.22);
+
+  /* Text */
+  --color-ink: #f5f5f7;
+  --color-ink-muted: #86868b;
+  --color-ink-faint: #515154;
+
+  /* Accent — used sparingly: links, active states, primary CTA */
+  --color-accent: #2997ff;
+  --color-accent-soft: #64b5ff;
+  --color-accent-glow: rgba(41, 151, 255, 0.35);
+
+  /* Fonts */
+  --font-display: "Inter", -apple-system, "SF Pro Display", system-ui, sans-serif;
+  --font-body: "Inter", -apple-system, "SF Pro Text", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
+
+  /* Easing — Apple-style spring-ish ease, no bounce */
+  --ease-apple: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  * {
+    @apply border-glass-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background: var(--color-canvas);
+  }
+
+  body {
+    @apply bg-canvas text-ink antialiased;
+    font-family: var(--font-body);
+    font-feature-settings: "kern", "liga";
+  }
+
+  ::selection {
+    background: var(--color-accent-glow);
+    color: var(--color-ink);
+  }
+
+  /* Visible keyboard focus — never remove outline, only restyle it */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Thin, unobtrusive scrollbar in the Apple style */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-canvas);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-ink-faint);
+    border-radius: 999px;
+    border: 2px solid var(--color-canvas);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Reusable glass material — used by GlassCard and any glass surface.
+     Uses Tailwind's own backdrop-blur/backdrop-saturate utilities via
+     @apply rather than hand-written backdrop-filter: the build's CSS
+     minifier was found to silently drop the unprefixed backdrop-filter
+     property when both prefixed/unprefixed versions were written by
+     hand, which breaks the effect outside Chromium/WebKit. Routing
+     through Tailwind's utilities avoids that failure mode. */
+  .glass {
+    background: var(--color-glass);
+    border: 1px solid var(--color-glass-border);
+    @apply backdrop-blur-xl backdrop-saturate-150;
+  }
+
+  .glass-hover {
+    transition: background 0.4s var(--ease-apple), border-color 0.4s var(--ease-apple),
+      transform 0.4s var(--ease-apple);
+  }
+  .glass-hover:hover {
+    background: var(--color-glass-hover);
+    border-color: var(--color-glass-border-hover);
+  }
+}
+
+/* Respect reduced-motion at the CSS level as a safety net,
+   in addition to the useReducedMotionSafe hook gating Framer Motion. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
